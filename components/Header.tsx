@@ -1,35 +1,82 @@
-import React, { useContext } from 'react';
-import { Theme } from '../types';
-import { SunIcon, MoonIcon, OmIcon, UserIcon, LogoutIcon } from './icons';
+import React, { useContext, useState, useRef, useEffect } from 'react';
+import { Theme, FontSize } from '../types';
+import { SunIcon, MoonIcon, OmIcon, UserIcon, LogoutIcon, AccessibilityIcon } from './icons';
 import { AuthContext } from '../contexts/AuthContext';
+import AccessibilityControls from './AccessibilityControls';
 
 interface HeaderProps {
   theme: Theme;
   setTheme: (theme: Theme) => void;
   openAuthModal: () => void;
   clearHistory: () => void;
+  fontSize: FontSize;
+  setFontSize: (size: FontSize) => void;
+  highContrast: boolean;
+  setHighContrast: (enabled: boolean) => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ theme, setTheme, openAuthModal, clearHistory }) => {
+const Header: React.FC<HeaderProps> = ({
+  theme,
+  setTheme,
+  openAuthModal,
+  clearHistory,
+  fontSize,
+  setFontSize,
+  highContrast,
+  setHighContrast
+}) => {
   const { user, logout } = useContext(AuthContext);
+  const [isAccessibilityOpen, setAccessibilityOpen] = useState(false);
+  const accessibilityRef = useRef<HTMLDivElement>(null);
 
   const handleClearHistory = () => {
-    if(window.confirm("Are you sure you want to delete all your chat history? This cannot be undone.")) {
+    if (window.confirm("Are you sure you want to delete all your chat history? This cannot be undone.")) {
       clearHistory();
     }
   }
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (accessibilityRef.current && !accessibilityRef.current.contains(event.target as Node)) {
+        setAccessibilityOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <header className="sticky top-0 z-20 p-4 bg-white/80 dark:bg-gray-900/80 traditional:bg-traditional-bg/80 backdrop-blur-md shadow-sm transition-colors duration-300">
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center space-x-2">
           <OmIcon className="h-8 w-8 text-gray-700 dark:text-gray-200 traditional:text-traditional-primary" />
-          <h1 className="text-xl md:text-2l font-serif font-bold text-gray-800 dark:text-gray-100 traditional:text-traditional-secondary">
+          <h1 className="text-xl md:text-2xl font-serif font-bold text-gray-800 dark:text-gray-100 traditional:text-traditional-text">
             Sanatani Gyan
           </h1>
         </div>
-        
+
         <div className="flex items-center space-x-2 sm:space-x-4">
+          <div className="relative" ref={accessibilityRef}>
+            <button
+              onClick={() => setAccessibilityOpen(!isAccessibilityOpen)}
+              className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 traditional:hover:bg-traditional-primary/20"
+              aria-label="Accessibility settings"
+            >
+              <AccessibilityIcon className="w-6 h-6 text-gray-600 dark:text-gray-300 traditional:text-traditional-secondary" />
+            </button>
+            {isAccessibilityOpen && (
+              <AccessibilityControls
+                fontSize={fontSize}
+                setFontSize={setFontSize}
+                highContrast={highContrast}
+                setHighContrast={setHighContrast}
+                onClose={() => setAccessibilityOpen(false)}
+              />
+            )}
+          </div>
+
           <div className="flex items-center space-x-1 bg-gray-200 dark:bg-gray-700 traditional:bg-traditional-card p-1 rounded-full">
             <button onClick={() => setTheme(Theme.Light)} className={`p-1.5 rounded-full transition-colors ${theme === Theme.Light ? 'bg-white shadow' : 'text-gray-500'}`} aria-label="Light mode">
               <SunIcon className="w-5 h-5" />
@@ -48,17 +95,17 @@ const Header: React.FC<HeaderProps> = ({ theme, setTheme, openAuthModal, clearHi
                 Clear History
               </button>
               <div className="flex items-center space-x-2">
-                 <UserIcon className="w-6 h-6 text-gray-700 dark:text-gray-200 traditional:text-traditional-secondary" />
-                 <span className="text-sm font-medium text-gray-700 dark:text-gray-200 traditional:text-traditional-secondary hidden sm:inline">{user.username}</span>
+                <UserIcon className="w-6 h-6 text-gray-700 dark:text-gray-200 traditional:text-traditional-secondary" />
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-200 traditional:text-traditional-secondary hidden sm:inline">{user.username}</span>
               </div>
               <button onClick={logout} aria-label="Logout" className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 traditional:hover:bg-traditional-primary/20">
-                <LogoutIcon className="w-6 h-6 text-gray-600 dark:text-gray-300 traditional:text-traditional-secondary"/>
+                <LogoutIcon className="w-6 h-6 text-gray-600 dark:text-gray-300 traditional:text-traditional-secondary" />
               </button>
             </div>
           ) : (
-            <button 
+            <button
               onClick={openAuthModal}
-              className="px-3 py-1.5 text-sm font-semibold bg-gray-800 text-white rounded-full hover:bg-gray-900 dark:bg-gray-700 dark:hover:bg-gray-600 traditional:bg-traditional-primary traditional:hover:bg-traditional-secondary transition-colors"
+              className="px-3 py-1.5 text-sm font-semibold bg-traditional-primary text-white rounded-full hover:bg-traditional-secondary transition-colors"
             >
               Login / Sign Up
             </button>

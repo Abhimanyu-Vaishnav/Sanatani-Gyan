@@ -39,7 +39,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={onClose}>
       <div className="bg-white dark:bg-gray-800 traditional:bg-traditional-card rounded-lg shadow-2xl p-8 w-full max-w-sm" onClick={(e) => e.stopPropagation()}>
-        <h2 className="text-2xl font-bold font-serif text-center mb-2 text-gray-800 dark:text-gray-100 traditional:text-traditional-secondary">
+        <h2 className="text-2xl font-bold font-serif text-center mb-2 text-gray-800 dark:text-gray-100 traditional:text-traditional-text">
           {isLogin ? 'Welcome Back' : 'Create Your Account'}
         </h2>
         <p className="text-center text-sm text-gray-500 dark:text-gray-400 traditional:text-traditional-text mb-6">
@@ -56,7 +56,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-gray-500 focus:border-gray-500 dark:bg-gray-700 dark:text-white traditional:bg-white traditional:border-traditional-primary/50 traditional:focus:ring-traditional-primary/50 traditional:focus:border-traditional-primary"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-traditional-primary focus:border-traditional-primary dark:bg-gray-700 dark:text-white traditional:bg-white traditional:border-traditional-primary/50 traditional:focus:ring-traditional-primary/50 traditional:focus:border-traditional-primary"
               placeholder="e.g., Arjuna"
             />
           </div>
@@ -65,7 +65,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           
           <button
             type="submit"
-            className="w-full bg-gray-800 text-white py-2 px-4 rounded-md hover:bg-gray-900 dark:bg-gray-700 dark:hover:bg-gray-600 traditional:bg-traditional-primary traditional:hover:bg-traditional-secondary transition-colors"
+            className="w-full bg-traditional-primary text-white py-2 px-4 rounded-md hover:bg-traditional-secondary transition-colors"
           >
             {isLogin ? 'Login' : 'Sign Up'}
           </button>
@@ -73,7 +73,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         
         <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">
           {isLogin ? "Don't have an account?" : "Already have an account?"}
-          <button onClick={() => { setIsLogin(!isLogin); setError(''); }} className="font-medium text-gray-700 dark:text-gray-300 traditional:text-traditional-primary hover:underline ml-1">
+          <button onClick={() => { setIsLogin(!isLogin); setError(''); }} className="font-medium text-traditional-primary hover:underline ml-1">
             {isLogin ? 'Sign Up' : 'Login'}
           </button>
         </p>

@@ -33,3 +33,5 @@ export interface User {
 }
 
 export type SpeechState = 'stopped' | 'playing' | 'paused';
+
+export type FontSize = 'sm' | 'md' | 'lg';

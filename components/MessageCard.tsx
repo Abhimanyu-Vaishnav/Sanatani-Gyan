@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import type { Message, Language } from '../types';
 import { BookmarkIcon, ReplyIcon, TrashIcon, ShareIcon } from './icons';
 import SpeechControls from './SpeechControls';
@@ -19,13 +19,13 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, toggleSaveMessage, d
   
   if (message.role === 'user') {
     return (
-      <div className="group flex justify-end items-center gap-2">
+      <div className="group flex justify-end items-start gap-2">
          {user && (
-          <button onClick={() => deleteMessage(message.id)} className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-opacity" title="Delete message">
+          <button onClick={() => deleteMessage(message.id)} className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all duration-300" title="Delete message">
             <TrashIcon className="w-4 h-4" />
           </button>
         )}
-        <div className="bg-gray-800 dark:bg-gray-700 traditional:bg-traditional-primary text-white rounded-lg rounded-br-none p-3 max-w-lg">
+        <div className="bg-traditional-primary text-white rounded-2xl rounded-br-none p-3 max-w-lg">
           <p>{message.text}</p>
         </div>
       </div>
@@ -36,8 +36,8 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, toggleSaveMessage, d
 
   return (
     <>
-      <div className="group flex justify-start items-center gap-2">
-        <div className="bg-gray-100 dark:bg-gray-800 traditional:bg-traditional-card text-gray-800 dark:text-gray-200 traditional:text-traditional-text rounded-lg rounded-bl-none p-4 max-w-2xl w-full font-serif">
+      <div className="group flex justify-start items-start gap-2">
+        <div className="bg-gray-100 dark:bg-gray-800 traditional:bg-traditional-card text-gray-800 dark:text-gray-200 traditional:text-traditional-text rounded-2xl rounded-bl-none p-4 max-w-2xl w-full font-serif shadow-sm">
           {answer ? (
             <div className="space-y-4">
               <div className="border-l-4 border-gray-500 dark:border-gray-400 traditional:border-traditional-primary pl-4">
@@ -89,7 +89,7 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, toggleSaveMessage, d
           )}
         </div>
         {user && (
-          <button onClick={() => deleteMessage(message.id)} className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-opacity" title="Delete message">
+          <button onClick={() => deleteMessage(message.id)} className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all duration-300" title="Delete message">
             <TrashIcon className="w-4 h-4" />
           </button>
         )}

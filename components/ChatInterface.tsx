@@ -130,7 +130,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({ onS
             </button>
             ))}
         </div>
-        <div className="flex items-end space-x-2 bg-white dark:bg-gray-800 traditional:bg-traditional-card rounded-xl shadow-lg p-2 border border-transparent focus-within:border-gray-500 dark:focus-within:border-gray-400 traditional:focus-within:border-traditional-primary transition-colors">
+        <div className="flex items-end space-x-2 bg-white dark:bg-gray-800 traditional:bg-traditional-card rounded-xl shadow-lg p-2 border-2 border-transparent focus-within:border-traditional-primary transition-colors">
             <textarea
             ref={textareaRef}
             value={inputValue}
@@ -168,7 +168,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({ onS
             <button
                 onClick={handleSend}
                 disabled={isLoading || !inputValue.trim()}
-                className="bg-gray-800 text-white rounded-full p-3 hover:bg-gray-900 disabled:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:disabled:bg-gray-600 traditional:bg-traditional-primary traditional:hover:bg-traditional-secondary traditional:disabled:bg-traditional-primary/50 transition-colors"
+                className="bg-traditional-primary text-white rounded-full p-3 hover:bg-traditional-secondary disabled:bg-traditional-primary/50 transition-colors"
                 aria-label="Send message"
             >
                 <SendIcon className="w-6 h-6" />

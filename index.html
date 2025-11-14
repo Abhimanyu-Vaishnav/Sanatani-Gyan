@@ -12,18 +12,18 @@
         theme: {
           extend: {
             colors: {
-              'traditional-bg': '#F3EAD3',
-              'traditional-primary': '#FF9933', // Saffron
-              'traditional-secondary': '#36241C', // Dark Brown (nearly black)
-              'traditional-text': '#36241C', // Dark Brown (nearly black)
-              'traditional-card': '#FFF8EC',
+              'traditional-bg': '#FFF8E1',
+              'traditional-primary': '#FF9933',      // Saffron
+              'traditional-secondary': '#A0522D',     // Saffron-brown accent
+              'traditional-text': '#A0522D',         // Saffron-brown text
+              'traditional-card': '#FFFBEB',
             },
             fontFamily: {
-              'sans': ['Inter', 'sans-serif'],
-              'serif': ['Lora', 'serif'],
+              'sans': ['Inter', 'Noto Sans Devanagari', 'sans-serif'],
+              'serif': ['Lora', 'Noto Sans Devanagari', 'serif'],
             },
             backgroundImage: {
-              'traditional-pattern': "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")"
+              'traditional-pattern': "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23A0522D' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")"
             }
           }
         }
@@ -32,47 +32,55 @@
     <style>
       /* Modern Scrollbar Styling */
       /* For Webkit browsers (Chrome, Safari) */
-      ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background-color: transparent;
-      }
-      ::-webkit-scrollbar-thumb {
-        border-radius: 10px;
-        background-color: #d1d5db; /* Default gray for light mode */
-      }
-      .dark ::-webkit-scrollbar-thumb {
-        background-color: #4b5563; /* Darker gray for dark mode */
-      }
-      .traditional ::-webkit-scrollbar-thumb {
-        background-color: #FF9933; /* Saffron for traditional mode */
-      }
-      ::-webkit-scrollbar-thumb:hover {
-         background-color: #9ca3af;
-      }
-      .dark ::-webkit-scrollbar-thumb:hover {
-        background-color: #6b7280;
-      }
-      .traditional ::-webkit-scrollbar-thumb:hover {
-        background-color: #e68a2e; /* Darker Saffron on hover */
-      }
+      ::-webkit-scrollbar { width: 8px; height: 8px; }
+      ::-webkit-scrollbar-track { background-color: transparent; }
+      ::-webkit-scrollbar-thumb { border-radius: 10px; background-color: #d1d5db; }
+      .dark ::-webkit-scrollbar-thumb { background-color: #4b5563; }
+      .traditional ::-webkit-scrollbar-thumb { background-color: #FF9933; }
+      ::-webkit-scrollbar-thumb:hover { background-color: #9ca3af; }
+      .dark ::-webkit-scrollbar-thumb:hover { background-color: #6b7280; }
+      .traditional ::-webkit-scrollbar-thumb:hover { background-color: #e68a2e; }
        /* For Firefox */
-      html {
-        scrollbar-width: thin;
-        scrollbar-color: #d1d5db transparent; /* thumb track */
+      html { scrollbar-width: thin; scrollbar-color: #d1d5db transparent; }
+      html.dark { scrollbar-color: #4b5563 transparent; }
+      html.traditional { scrollbar-color: #FF9933 transparent; }
+
+      /* --- Accessibility Styles --- */
+      html { font-size: 16px; /* Default medium */ }
+      html.font-size-sm { font-size: 14px; }
+      html.font-size-lg { font-size: 18px; }
+
+      /* High Contrast Mode Overrides */
+      html.high-contrast.traditional, html.high-contrast.traditional body {
+        background-color: #000 !important;
+        color: #fff !important;
+        background-image: none !important;
       }
-      html.dark {
-        scrollbar-color: #4b5563 transparent;
+      html.high-contrast.traditional .traditional\\:bg-traditional-card {
+        background-color: #111 !important;
+        border: 1px solid #FFFF00;
       }
-      html.traditional {
-        scrollbar-color: #FF9933 transparent;
+      html.high-contrast.traditional .traditional\\:text-traditional-text,
+      html.high-contrast.traditional .traditional\\:text-traditional-secondary {
+        color: #FFFF00 !important; /* Bright Yellow Text */
       }
+       html.high-contrast.traditional .traditional\\:text-traditional-primary {
+        color: #FF9933 !important; /* Saffron is high contrast on black */
+      }
+      html.high-contrast.traditional .traditional\\:bg-traditional-primary {
+        background-color: transparent !important;
+        color: #000 !important;
+        border: 1px solid #FF9933;
+      }
+       html.high-contrast.traditional .traditional\\:bg-traditional-primary button,
+       html.high-contrast.traditional .traditional\\:bg-traditional-primary span {
+         color: #FF9933 !important;
+       }
+
     </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Noto+Sans+Devanagari:wght@400;500;700&display=swap" rel="stylesheet">
   <script type="importmap">
 {
   "imports": {
