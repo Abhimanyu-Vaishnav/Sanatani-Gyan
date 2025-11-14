@@ -1,0 +1,7 @@
+{
+  "name": "Sanatani Gyan",
+  "description": "An AI-powered application providing culturally authentic, scripture-grounded life guidance from Hindu tradition. Users can ask questions via text or voice in multiple languages and receive concise teachings, scriptural references, and practical action steps. The app features customizable themes, conversation history, and the ability to save and share wisdom.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}

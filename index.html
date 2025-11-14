@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sanatani Gyan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              'traditional-bg': '#F3EAD3',
+              'traditional-primary': '#FF9933', // Saffron
+              'traditional-secondary': '#36241C', // Dark Brown (nearly black)
+              'traditional-text': '#36241C', // Dark Brown (nearly black)
+              'traditional-card': '#FFF8EC',
+            },
+            fontFamily: {
+              'sans': ['Inter', 'sans-serif'],
+              'serif': ['Lora', 'serif'],
+            },
+            backgroundImage: {
+              'traditional-pattern': "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")"
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      /* Modern Scrollbar Styling */
+      /* For Webkit browsers (Chrome, Safari) */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background-color: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        background-color: #d1d5db; /* Default gray for light mode */
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background-color: #4b5563; /* Darker gray for dark mode */
+      }
+      .traditional ::-webkit-scrollbar-thumb {
+        background-color: #FF9933; /* Saffron for traditional mode */
+      }
+      ::-webkit-scrollbar-thumb:hover {
+         background-color: #9ca3af;
+      }
+      .dark ::-webkit-scrollbar-thumb:hover {
+        background-color: #6b7280;
+      }
+      .traditional ::-webkit-scrollbar-thumb:hover {
+        background-color: #e68a2e; /* Darker Saffron on hover */
+      }
+       /* For Firefox */
+      html {
+        scrollbar-width: thin;
+        scrollbar-color: #d1d5db transparent; /* thumb track */
+      }
+      html.dark {
+        scrollbar-color: #4b5563 transparent;
+      }
+      html.traditional {
+        scrollbar-color: #FF9933 transparent;
+      }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.29.1"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
