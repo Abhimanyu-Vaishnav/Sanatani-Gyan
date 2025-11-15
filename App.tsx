@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef, useContext, useCallback } from 'react';
 import Header from './components/Header';
 import MessageCard from './components/MessageCard';
 import ChatInterface, { type ChatInterfaceHandle } from './components/ChatInterface';
 import AuthModal from './components/AuthModal';
+import PromptSuggestions from './components/PromptSuggestions';
 import useLocalStorage from './hooks/useLocalStorage';
 import { getScripturalAnswer } from './services/geminiService';
 import type { Message, FontSize } from './types';
@@ -17,27 +18,36 @@ function App() {
 
   const { user } = useContext(AuthContext);
   
-  // Use standard useState for messages to avoid violating Rules of Hooks
   const [messages, setMessages] = useState<Message[]>([]);
-
   const [isLoading, setIsLoading] = useState(false);
   const [isAuthModalOpen, setAuthModalOpen] = useState(false);
+  const [showPrompts, setShowPrompts] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatInterfaceRef = useRef<ChatInterfaceHandle>(null);
+  const inactivityTimerRef = useRef<number | null>(null);
+  const loadedUserKey = useRef<string | null>(null);
 
-  // Effect to LOAD messages from localStorage when user changes
+  // Determine storage key based on user, ensuring it updates on login/logout.
+  const messageStorageKey = user ? `messages_${user.username}` : 'guest_messages';
+
+  // Effect to LOAD messages from localStorage when the user (and thus the key) changes.
   useEffect(() => {
-    const key = user ? `messages_${user.username}` : 'guest_messages';
-    const storedMessages = window.localStorage.getItem(key);
+    const storedMessages = window.localStorage.getItem(messageStorageKey);
     setMessages(storedMessages ? JSON.parse(storedMessages) : []);
-  }, [user]);
+    // Mark that we have successfully loaded messages for the current key.
+    loadedUserKey.current = messageStorageKey;
+  }, [messageStorageKey]);
 
-  // Effect to SAVE messages to localStorage when messages or user change
+  // Effect to SAVE messages to localStorage when the messages array is updated.
   useEffect(() => {
-    const key = user ? `messages_${user.username}` : 'guest_messages';
-    window.localStorage.setItem(key, JSON.stringify(messages));
-  }, [messages, user]);
+    // This check is crucial. It prevents the app from saving stale `messages` from a
+    // previous user to the new user's storage key immediately after login/logout.
+    // We only save when the loaded data corresponds to the current user key.
+    if (loadedUserKey.current === messageStorageKey) {
+      window.localStorage.setItem(messageStorageKey, JSON.stringify(messages));
+    }
+  }, [messages, messageStorageKey]);
 
 
   useEffect(() => {
@@ -66,6 +76,38 @@ function App() {
 
   useEffect(scrollToBottom, [messages]);
 
+  const handleUserActivity = useCallback(() => {
+    // Hide prompts and clear any existing timer
+    setShowPrompts(false);
+    if (inactivityTimerRef.current) {
+        clearTimeout(inactivityTimerRef.current);
+    }
+    // If there are messages, set a new timer to show prompts after inactivity
+    if (messages.length > 0) {
+        inactivityTimerRef.current = window.setTimeout(() => {
+            setShowPrompts(true);
+        }, 30000); // 30 seconds
+    }
+  }, [messages.length]);
+
+  // Effect to manage initial prompt visibility and reset timer on new messages
+  useEffect(() => {
+    if (messages.length === 0) {
+        setShowPrompts(true);
+    } else {
+        // New message arrived, treat it as activity
+        handleUserActivity();
+    }
+
+    // Cleanup timer on unmount
+    return () => {
+        if (inactivityTimerRef.current) {
+            clearTimeout(inactivityTimerRef.current);
+        }
+    };
+  }, [messages, handleUserActivity]);
+
+
   const toggleSaveMessage = (id: string) => {
     const updatedMessages = messages.map(msg => 
       msg.id === id ? { ...msg, isSaved: !msg.isSaved } : msg
@@ -86,6 +128,7 @@ function App() {
   };
 
   const handleSendMessage = async (text: string) => {
+    setShowPrompts(false); // Hide prompts immediately when sending.
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
@@ -173,6 +216,7 @@ function App() {
 
       <footer className="sticky bottom-0 bg-transparent">
         <div className="container mx-auto max-w-4xl">
+          {showPrompts && <PromptSuggestions onPromptClick={handleSendMessage} />}
           <ChatInterface 
             ref={chatInterfaceRef} 
             onSendMessage={handleSendMessage} 
@@ -182,6 +226,7 @@ function App() {
             openAuthModal={() => setAuthModalOpen(true)}
             language={language}
             setLanguage={setLanguage}
+            onInputChange={handleUserActivity}
           />
         </div>
       </footer>

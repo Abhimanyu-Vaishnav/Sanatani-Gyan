@@ -7,12 +7,16 @@ interface SpeechControlsProps {
   language: Language;
 }
 
+// Keep utterance in a module-level scope to persist it across re-renders
+// and allow for on-the-fly modifications (like rate change).
 let utterance: SpeechSynthesisUtterance | null = null;
 
 const SpeechControls: React.FC<SpeechControlsProps> = ({ answer, language }) => {
   const [speechState, setSpeechState] = useState<SpeechState>('stopped');
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [rate, setRate] = useState<number>(1);
 
+  // Effect to load voices and clean up on unmount
   useEffect(() => {
     const handleVoicesChanged = () => {
       setVoices(window.speechSynthesis.getVoices());
@@ -22,12 +26,13 @@ const SpeechControls: React.FC<SpeechControlsProps> = ({ answer, language }) => 
 
     return () => {
       window.speechSynthesis.onvoiceschanged = null;
-      // Cleanup: stop speaking if component unmounts
-      if (speechState !== 'stopped') {
+      // Ensure any speech is stopped when the component unmounts
+      if (window.speechSynthesis.speaking) {
         window.speechSynthesis.cancel();
       }
+      utterance = null;
     };
-  }, [speechState]);
+  }, []); // Run only once
 
   const getFullText = useCallback(() => {
     return `
@@ -53,11 +58,12 @@ const SpeechControls: React.FC<SpeechControlsProps> = ({ answer, language }) => 
 
     let voice: SpeechSynthesisVoice | undefined;
 
-    // Prioritize voice based on selected language
+    // Prioritize voice based on selected language for a more authentic experience
     if (language === 'Hindi') {
       voice = voices.find(v => v.lang === 'hi-IN');
     } else if (language === 'Hinglish') {
-      voice = voices.find(v => v.lang === 'en-IN'); // Prioritize Indian English for Hinglish
+      // Prioritize Indian English for Hinglish, as it handles mixed language well
+      voice = voices.find(v => v.lang === 'en-IN');
     }
     
     // Fallback for English or if preferred voice not found
@@ -75,10 +81,17 @@ const SpeechControls: React.FC<SpeechControlsProps> = ({ answer, language }) => 
       utterance.lang = voice.lang;
     }
 
-    utterance.onend = () => setSpeechState('stopped');
+    // Apply the selected rate
+    utterance.rate = rate;
+
+    utterance.onend = () => {
+      setSpeechState('stopped');
+      utterance = null;
+    };
     utterance.onerror = (e) => {
         console.error("Speech synthesis error", e);
         setSpeechState('stopped');
+        utterance = null;
     };
 
     window.speechSynthesis.speak(utterance);
@@ -96,6 +109,14 @@ const SpeechControls: React.FC<SpeechControlsProps> = ({ answer, language }) => 
     utterance = null;
   };
   
+  const handleRateChange = (newRate: number) => {
+    setRate(newRate);
+    if (utterance) {
+      // Update rate on the fly if speech is active or paused
+      utterance.rate = newRate;
+    }
+  };
+
   return (
     <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300 traditional:text-traditional-secondary">
       {speechState !== 'playing' ? (
@@ -112,6 +133,27 @@ const SpeechControls: React.FC<SpeechControlsProps> = ({ answer, language }) => 
           <StopIcon className="w-5 h-5" />
         </button>
       )}
+
+      {/* Divider */}
+      <div className="w-px h-4 bg-gray-300 dark:bg-gray-600 traditional:bg-traditional-primary/30"></div>
+      
+      {/* Rate Controls */}
+      <div className="flex items-center space-x-1">
+        {[0.75, 1, 1.25].map((r) => (
+          <button
+            key={r}
+            onClick={() => handleRateChange(r)}
+            className={`px-2 py-0.5 text-xs font-semibold rounded-full transition-colors ${
+              rate === r
+                ? 'bg-traditional-primary text-white'
+                : 'bg-gray-200 dark:bg-gray-700 traditional:bg-traditional-primary/20 hover:bg-gray-300 dark:hover:bg-gray-600'
+            }`}
+            aria-pressed={rate === r}
+          >
+            {r}x
+          </button>
+        ))}
+      </div>
     </div>
   );
 };

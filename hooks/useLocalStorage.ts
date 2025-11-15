@@ -1,5 +1,7 @@
 
-import { useState, useEffect } from 'react';
+
+// FIX: Import `React` to make the React namespace available for type annotations like `React.Dispatch`.
+import React, { useState, useEffect } from 'react';
 
 function useLocalStorage<T,>(key: string, initialValue: T): [T, React.Dispatch<React.SetStateAction<T>>] {
   const [storedValue, setStoredValue] = useState<T>(() => {

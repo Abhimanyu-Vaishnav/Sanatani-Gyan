@@ -10,6 +10,7 @@ interface ChatInterfaceProps {
   openAuthModal: () => void;
   language: Language;
   setLanguage: (language: Language) => void;
+  onInputChange?: () => void;
 }
 
 export interface ChatInterfaceHandle {
@@ -32,7 +33,7 @@ if (SpeechRecognition) {
   recognition.maxAlternatives = 1;
 }
 
-const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({ onSendMessage, isLoading, isGuest, messageCount, openAuthModal, language, setLanguage }, ref) => {
+const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({ onSendMessage, isLoading, isGuest, messageCount, openAuthModal, language, setLanguage, onInputChange }, ref) => {
   const [inputValue, setInputValue] = useState('');
   const [isListening, setIsListening] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -134,7 +135,10 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({ onS
             <textarea
             ref={textareaRef}
             value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
+            onChange={(e) => {
+                setInputValue(e.target.value)
+                onInputChange?.();
+            }}
             onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();

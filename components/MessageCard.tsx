@@ -77,9 +77,11 @@ const MessageCard: React.FC<MessageCardProps> = ({ message, toggleSaveMessage, d
                   <button onClick={() => setShowShareModal(true)} className="hover:text-gray-800 dark:hover:text-gray-200 traditional:hover:text-traditional-primary transition-colors" title="Share">
                     <ShareIcon className="w-5 h-5"/>
                   </button>
-                  <button onClick={() => toggleSaveMessage(message.id)} className="hover:text-gray-800 dark:hover:text-gray-200 traditional:hover:text-traditional-primary transition-colors" title="Save answer">
-                    <BookmarkIcon className="w-5 h-5" isFilled={message.isSaved} />
-                  </button>
+                  {user && (
+                    <button onClick={() => toggleSaveMessage(message.id)} className="hover:text-gray-800 dark:hover:text-gray-200 traditional:hover:text-traditional-primary transition-colors" title="Save answer">
+                      <BookmarkIcon className="w-5 h-5" isFilled={message.isSaved} />
+                    </button>
+                  )}
                 </div>
               </div>
               
